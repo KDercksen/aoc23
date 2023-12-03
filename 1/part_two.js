@@ -36,7 +36,7 @@ lineReader.on("line", (line) => {
     lastDigit = numMap[lastDigit];
   }
 
-  const value = parseInt(firstDigit + lastDigit);
+  const value = +(firstDigit + lastDigit);
   console.log(value);
   sum += value;
 });

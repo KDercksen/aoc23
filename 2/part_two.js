@@ -8,7 +8,7 @@ const lineReader = readline.createInterface({
 let powerSum = 0;
 
 lineReader.on("line", (line) => {
-  const id = parseInt(line.match(/Game (\d+)/)[1]);
+  const id = +line.match(/Game (\d+)/)[1];
   const games = line.split(":")[1].split(";");
   let red = 0,
     green = 0,
@@ -18,13 +18,13 @@ lineReader.on("line", (line) => {
     for (let count of counts) {
       const c = count.trim().split(" ");
       if (c[1] === "red") {
-        red = Math.max(red, parseInt(c[0]));
+        red = Math.max(red, +c[0]);
       }
       if (c[1] === "green") {
-        green = Math.max(green, parseInt(c[0]));
+        green = Math.max(green, +c[0]);
       }
       if (c[1] === "blue") {
-        blue = Math.max(blue, parseInt(c[0]));
+        blue = Math.max(blue, +c[0]);
       }
     }
   }
