@@ -28,48 +28,32 @@ for (let c = 0; c < grid[0].length; c++) {
 let galaxyLocations = [];
 for (let r = 0; r < grid.length; r++) {
   for (let c = 0; c < grid[0].length; c++) {
-    if (expandedGrid[r][c] === "#") {
+    if (grid[r][c] === "#") {
       galaxyLocations.push([r, c]);
     }
   }
 }
 
-class PriorityQueue {
-  constructor() {
-    this.queue = [];
-  }
-
-  enqueue(item, priority) {
-    this.queue.push({ item, priority });
-    this.queue.sort((a, b) => a.priority - b.priority);
-  }
-
-  dequeue() {
-    return this.queue.shift();
-  }
-
-  isEmpty() {
-    return this.queue.length === 0;
-  }
-}
-
-const shortestPath = (grid, start, end) => {
-  let distances = {};
-  let prev = {};
-  let pq = new PriorityQueue();
-
-  distances[start] = 0;
-  pq.enqueue(start, 0);
-  while (!pq.isEmpty()) {
-    let [node, distance] = pq.dequeue();
-    let neighbors = 
-  }
+// calculate expanded galaxy locations by checking how many expanded
+// columns/rows are before the current location
+let expandedGalaxyLocations = [];
+for ([r, c] of galaxyLocations) {
+  let columnsBefore = expandedCols.filter((x) => x < c).length;
+  let rowsBefore = expandedRows.filter((x) => x < r).length;
+  expandedGalaxyLocations.push([
+    r + rowsBefore * 1000000 - rowsBefore,
+    c + columnsBefore * 1000000 - columnsBefore,
+  ]);
 }
 
 // calculate distances between all pairs of galaxies
 let distances = [];
 for (let a = 0; a < galaxyLocations.length; a++) {
-  for (let b = a + 1; b < galaxyLocations.length; b++) {}
+  for (let b = a + 1; b < galaxyLocations.length; b++) {
+    let [r1, c1] = expandedGalaxyLocations[a];
+    let [r2, c2] = expandedGalaxyLocations[b];
+    let distance = distances.push(Math.abs(r1 - r2) + Math.abs(c1 - c2));
+  }
 }
 
 console.log(distances.reduce((a, b) => a + b, 0));
