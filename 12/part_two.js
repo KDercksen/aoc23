@@ -34,35 +34,31 @@ const isPossiblePrefix = (prefix, springs) => {
   return prefix.every((x, i) => x === springs[i] || springs[i] === "?");
 };
 
-const possibleArrangements = memoize((springs, groups) => {
-  let first = groups[0];
-  let restLength =
-    groups.slice(1).reduce((a, b) => a + b, 0) + groups.length - 1;
-  let count = 0;
-  for (let firstPos of Array(springs.length - restLength - first + 1).keys()) {
-    let prefix = (".".repeat(firstPos) + "#".repeat(first) + ".").split("");
-    if (isPossiblePrefix(prefix, springs)) {
-      if (groups.length === 1) {
-        if (springs.slice(prefix.length).every((x) => x !== "#")) {
-          count++;
-        }
-      } else {
-        count += possibleArrangements(
-          springs.slice(prefix.length),
-          groups.slice(1)
-        );
-      }
-    }
+const possibleArrangements = memoize((springs, counts) => {
+  if (springs.length == 0) {
+    return +(counts.length == 0);
   }
-  return count;
+  if (counts.length == 0) {
+    return springs.every((x) => x !== "#");
+  }
+  let result = 0;
+  if (springs[0] === "." || springs[0] === "?") {
+    result += possibleArrangements(springs.slice(1), counts);
+  }
+  if (
+    "#?".split("").some((x) => x === springs[0]) &&
+    counts[0] <= springs.length &&
+    springs.slice(0, counts[0]).every((x) => x !== ".") &&
+    (counts[0] === springs.length || springs[counts[0]] !== "#")
+  ) {
+    result += possibleArrangements(
+      springs.slice(counts[0] + 1),
+      counts.slice(1)
+    );
+  }
+  return result;
 });
 
-// console.log(
-//   data.reduce((acc, row) => acc + possibleArrangements(row[0], row[1]), 0)
-// );
-
-let springs = [...Array(5).fill("?###?????????").flat()].join("").split("");
-springs = springs.slice(0, springs.length - 1);
-let groups = [...Array(5).fill([3, 2, 1]).flat()];
-console.log(groups, springs);
-console.log(possibleArrangements(springs, groups));
+console.log(
+  data.reduce((acc, row) => acc + possibleArrangements(row[0], row[1]), 0)
+);
